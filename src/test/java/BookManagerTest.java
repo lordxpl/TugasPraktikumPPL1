@@ -77,4 +77,47 @@ public class BookManagerTest {
         assertTrue(semuaBuku.contains(buku1));
         assertTrue(semuaBuku.contains(buku2));
     }
+
+    @Test
+    @DisplayName("Test buku dengan data invalid")
+    void testInvalidBook() {
+        // Data invalid: title kosong, year negatif
+        Book invalidBook = new Book("", "Anonim", -2020);
+
+        // Ekspektasi: seharusnya melempar exception
+        assertThrows(IllegalArgumentException.class, () -> {
+            bookManager.addBook(invalidBook);
+        });
+    }
+
+    @Test
+    @DisplayName("Test mencari buku dengan author yang salah")
+    void testFindBooksByWrongAuthor() {
+        Book buku1 = new Book("Pemrograman Java", "Andi", 2020);
+        Book buku2 = new Book("Struktur Data", "Andi", 2021);
+
+        bookManager.addBook(buku1);
+        bookManager.addBook(buku2);
+
+        // Cari dengan author yang salah
+        List<Book> hasil = bookManager.findBooksByAuthor("Budi");
+
+        // EXPECTED: kita sengaja tulis salah (seharusnya 0, tapi ditulis 1)
+        assertEquals(1, hasil.size(), "Seharusnya tidak ada buku dengan author Budi");
+    }
+
+    @Test
+    @DisplayName("Test jumlah buku setelah penambahan")
+    void testAddBookFailCount() {
+        Book buku1 = new Book("Algoritma", "Budi", 2019);
+        Book buku2 = new Book("Jaringan Komputer", "Erlangga", 2021);
+
+        bookManager.addBook(buku1);
+        bookManager.addBook(buku2);
+
+        // Seharusnya jumlah buku = 2, tapi kita ekspektasi 3 -> ini akan FAIL
+        assertEquals(3, bookManager.getBookCount(), "Jumlah buku seharusnya 2, bukan 3");
+    }
+
+
 }
